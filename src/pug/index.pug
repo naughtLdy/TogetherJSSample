@@ -3,7 +3,50 @@ html(lang='ja')
   head
     meta(charset='utf-8')
     title TogetherJSSample
+    style.
+      html, body{
+        margin: 0;
+        padding: 0;
+      }
+      #canvas-root {
+        margin: 0px;
+        width: 100vw;
+        height: 100vh;
+      }
   body
-    button(onclick="TogetherJS(this); return false;")
+    button(onclick="TogetherJS(this); return false;", style="float: left")
       | TogetherJSを起動！
+    #canvas-root: canvas#canvas
   script(src='https://togetherjs.com/togetherjs-min.js')
+  script.
+    const root = document.getElementById('canvas-root');
+    const canvas = document.getElementById('canvas');
+    canvas.width = root.offsetWidth;
+    canvas.height = root.offsetHeight;
+    const ctx = canvas.getContext('2d');
+    let prevEvent;
+    canvas.addEventListener('mousedown', e => {
+      prevEvent = e;
+    });
+    canvas.addEventListener('mouseup', e => {
+      ctx.closePath();
+    });
+    canvas.addEventListener('mousemove', e => {
+      if(e.buttons !== 1) return;
+      ctx.beginPath();
+      ctx.moveTo(prevEvent.offsetX, prevEvent.offsetY);
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.closePath();
+      ctx.stroke();
+      TogetherJS.send({type: 'app.stroke', start: [prevEvent.offsetX, prevEvent.offsetY], end: [e.offsetX, e.offsetY]);
+      prevEvent = e;
+    });
+    TogetherJS.hub.on('app.stroke', msg => {
+      if(!msg.sameUrl) { return; }
+      ctx.beginPath();
+      ctx.moveTo(msg.start[0], msg.start[1]);
+      ctx.lineTo(msg.end[0], msg.end[1]);
+      ctx.endPath();
+      ctx.stroke();
+    });
+
