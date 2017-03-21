@@ -36,17 +36,19 @@ html(lang='ja')
       ctx.beginPath();
       ctx.moveTo(prevEvent.offsetX, prevEvent.offsetY);
       ctx.lineTo(e.offsetX, e.offsetY);
+      try{
+        TogetherJS.send({type: 'app.stroke', start: [prevEvent.offsetX, prevEvent.offsetY], end: [e.offsetX, e.offsetY]});
+      }catch(e){}
+      prevEvent = e;
       ctx.closePath();
       ctx.stroke();
-      TogetherJS.send({type: 'app.stroke', start: [prevEvent.offsetX, prevEvent.offsetY], end: [e.offsetX, e.offsetY]);
-      prevEvent = e;
     });
-    TogetherJS.hub.on('app.stroke', msg => {
+    TogetherJS.hub.on('stroke', msg => {
       if(!msg.sameUrl) { return; }
       ctx.beginPath();
       ctx.moveTo(msg.start[0], msg.start[1]);
       ctx.lineTo(msg.end[0], msg.end[1]);
-      ctx.endPath();
+      ctx.closePath();
       ctx.stroke();
     });
 
