@@ -3,7 +3,7 @@ let path = require('path');
 
 let app = express();
 let env = app.get('env');
-let port = 7000;
+let port = proceas.env.PORT;
 app.set('port', port);
 
 // production
