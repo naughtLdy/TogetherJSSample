@@ -1,0 +1,21 @@
+{
+  "name": "togetherjs-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run env:development && node app.js",
+    "start:production": "npm run env:production && node app.js",
+    "env:production": "NODE_ENV=production",
+    "env:development": "NODE_ENV=development",
+    "build:pug": "pug src/pug/*.pug -o dist/",
+    "build": "npm run build:pug"
+  },
+  "author": "naughtLdy",
+  "license": "ISC",
+  "devDependencies": {
+    "express": "^4.15.2",
+    "pug": "^2.0.0-beta11",
+    "pug-cli": "^1.0.0-alpha6"
+  }
+}
